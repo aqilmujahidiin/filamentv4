@@ -13,15 +13,19 @@ class Payment extends Model
         'student_id',
         'payment_method',
         'payment_date',
-        'total_amount',
         'payment_status',
+        'midtrans_transaction_id',
+        'va_number',
+        'bank',
+        'expiry_time',
         'payment_note',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
-        'payment_date' => 'date',
+        'payment_date' => 'datetime',
+        'expiry_time' => 'datetime',
         'payment_status' => PaymentStatus::class,
     ];
 
