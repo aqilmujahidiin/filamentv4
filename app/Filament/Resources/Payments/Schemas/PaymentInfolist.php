@@ -18,6 +18,10 @@ class PaymentInfolist
                             ->label('Student Name')
                             ->icon('heroicon-s-user')
                             ->size('sm'),
+                        TextEntry::make('student_guardian')
+                            ->label('Guardian  Name')
+                            ->icon('heroicon-s-user')
+                            ->size('sm'),
                         TextEntry::make('payment_amount')
                             ->prefix('Rp')
                             ->badge()

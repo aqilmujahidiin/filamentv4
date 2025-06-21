@@ -34,6 +34,10 @@ class Payment extends Model
         return $this->belongsTo(Student::class);
     }
 
+    public function getStudentGuardianAttribute()
+    {
+        return $this->student?->guardian?->name;
+    }
     /**
      * BelongsToMany Relation
      */
