@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Payments\Schemas;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use GrahamCampbell\ResultType\Success;
 
 class PaymentInfolist
 {
@@ -19,7 +18,11 @@ class PaymentInfolist
                             ->label('Student Name')
                             ->icon('heroicon-s-user')
                             ->size('sm'),
-                        TextEntry::make('total_amount')
+                        TextEntry::make('student_guardian')
+                            ->label('Guardian  Name')
+                            ->icon('heroicon-s-user')
+                            ->size('sm'),
+                        TextEntry::make('payment_amount')
                             ->prefix('Rp')
                             ->badge()
                             ->color('success')
@@ -27,10 +30,22 @@ class PaymentInfolist
                         TextEntry::make('payment_method')
                             ->badge(),
                         TextEntry::make('payment_date')
-                            ->date(),
+                            ->date('d M Y'),
                         TextEntry::make('payment_status'),
-                        TextEntry::make('created_at')
+                        TextEntry::make('midtrans_transaction_id')
+                            ->label('Transaction ID'),
+                        TextEntry::make('va_number')
+                            ->label('VA Number')
+                            ->copyable()
+                            ->icon('heroicon-s-clipboard'),
+                        TextEntry::make('bank')
+                            ->label('Bank'),
+                        TextEntry::make('expiry_time')
+                            ->label('Expiry Time')
                             ->dateTime('d M Y H:i'),
+
+                        TextEntry::make('payment_note')
+                            ->label('Note'),
                     ])->columns(3)
                     ->columnSpanFull()
             ]);

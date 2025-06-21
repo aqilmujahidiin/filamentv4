@@ -13,9 +13,12 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('payment_method')->nullable();
-            $table->date('payment_date')->nullable();
+            $table->dateTime('payment_date')->nullable();
             $table->string('payment_status')->nullable();
-            $table->decimal('total_amount', 10, 2)->nullable()->default(0);
+            $table->string('midtrans_transaction_id')->nullable();
+            $table->string('va_number')->nullable();
+            $table->string('bank')->nullable();
+            $table->timestamp('expiry_time')->nullable();
             $table->text('payment_note')->nullable();
             $table->foreignId('student_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();

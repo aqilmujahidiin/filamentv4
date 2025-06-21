@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ScheduleStatusEnum;
 use App\Traits\HasUserTracking;
+use Faker\Guesser\Name;
 use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
@@ -45,6 +46,12 @@ class Schedule extends Model
     {
         return $this->hasMany(Schedule::class);
     }
+
+    public function getStudentGuardianAttribute()
+    {
+        return $this->student?->guardian?->name;
+    }
+
     /**
      * calculate hour
      */

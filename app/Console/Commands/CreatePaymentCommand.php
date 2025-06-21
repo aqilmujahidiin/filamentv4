@@ -100,7 +100,7 @@ class CreatePaymentCommand extends Command
                 'payment_date' => null, // Akan diisi saat pembayaran dilakukan
                 'total_amount' => $totalAmount,
                 'payment_status' => PaymentStatus::Unpaid,
-                'payment_note' => 'Auto-generated payment for 8 completed schedules',
+                'payment_note' => ("Total pembayaran untuk {$schedules->count()} jadwal sudah selesai"),
                 'created_by' => 1, // Ganti dengan user ID yang sesuai atau gunakan sistem
             ]);
 
