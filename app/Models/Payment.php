@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\PaymentStatus;
+use App\Enums\PaymentStatusEnum;
 use App\Traits\HasUserTracking;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,7 +26,7 @@ class Payment extends Model
     protected $casts = [
         'payment_date' => 'datetime',
         'expiry_time' => 'datetime',
-        'payment_status' => PaymentStatus::class,
+        'payment_status' => PaymentStatusEnum::class,
     ];
 
     public function student()
@@ -60,6 +60,17 @@ class Payment extends Model
     public function getPaymentAmountAttribute()
     {
         return $this->schedulePayments()->sum('amount');
+    }
+    /**
+     * Summary of unPaidPayement
+     * @return bool
+     */
+    public function scopeUnpaid($query)
+    {
+        return $query->whereIn('payment_status', [
+            PaymentStatusEnum::Unpaid,
+            PaymentStatusEnum::Pending,
+        ]);
     }
 
     /**

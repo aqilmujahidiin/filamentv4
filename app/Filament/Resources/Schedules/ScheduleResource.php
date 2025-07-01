@@ -4,12 +4,14 @@ namespace App\Filament\Resources\Schedules;
 
 use App\Enums\ScheduleStatusEnum;
 use App\Filament\Resources\Schedules\Pages\ManageSchedules;
+use App\Models\Course;
 use App\Models\Schedule;
 use BackedEnum;
 use Filament\Actions\{BulkActionGroup, DeleteAction, DeleteBulkAction, EditAction};
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\{DatePicker, Select, TimePicker};
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -32,12 +34,23 @@ class ScheduleResource extends Resource
                 TimePicker::make('end_time'),
                 Select::make('status')
                     ->options(ScheduleStatusEnum::class),
-                Select::make('course_id')
-                    ->relationship('course', 'name')
-                    ->searchable()
-                    ->preload(),
                 Select::make('student_id')
                     ->relationship('student', 'name')
+                    ->live()
+                    ->searchable()
+                    ->preload(),
+                Select::make('course_id')
+                    ->relationship('course', 'name')
+                    ->options(function (Get $get) {
+                        $student = $get('student_id');
+                        if (!$student) {
+                            return [];
+                        }
+
+                        return Course::query()
+                            ->whereHas('educationLevel', fn($query) => $query->where('id', $student->education_level_id))
+                            ->pluck('name', 'id');
+                    })
                     ->searchable()
                     ->preload(),
                 Select::make('teacher_id')

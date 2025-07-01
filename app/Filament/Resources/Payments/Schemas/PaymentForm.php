@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Payments\Schemas;
 
 use App\Models\Schedule;
 use Filament\Support\RawJs;
-use App\Enums\PaymentStatus;
+use App\Enums\PaymentStatusEnum;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\{Select, Repeater, Textarea, TextInput, DatePicker};
 use Illuminate\Database\Eloquent\Builder;
@@ -29,7 +29,7 @@ class PaymentForm
                 DatePicker::make('payment_date'),
                 ToggleButtons::make('payment_status')
                     ->inline()
-                    ->options(PaymentStatus::class),
+                    ->options(PaymentStatusEnum::class),
 
                 Textarea::make('payment_note')
                     ->columnSpanFull(),

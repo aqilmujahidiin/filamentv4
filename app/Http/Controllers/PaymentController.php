@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
-use App\Enums\PaymentStatus;
+use App\Enums\PaymentStatusEnum;
 use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +15,7 @@ class PaymentController extends Controller
         $url = $midtrans->createSnapUrl($payment);
 
         $payment->update([
-            'payment_status' => PaymentStatus::Pending,
+            'payment_status' => PaymentStatusEnum::Pending,
             'payment_date' => now(),
             'payment_note' => 'Waiting for payment via Midtrans',
         ]);
@@ -51,9 +51,9 @@ class PaymentController extends Controller
 
         $payment->update([
             'payment_status' => match ($txStatus) {
-                'settlement', 'capture' => PaymentStatus::Paid,
-                'expire', 'cancel', 'deny' => PaymentStatus::Expired,
-                'pending' => PaymentStatus::Pending,
+                'settlement', 'capture' => PaymentStatusEnum::Paid,
+                'expire', 'cancel', 'deny' => PaymentStatusEnum::Expired,
+                'pending' => PaymentStatusEnum::Pending,
                 default => $payment->payment_status,
             },
             'payment_method' => $txType,

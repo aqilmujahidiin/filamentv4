@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\PaymentStatus;
+use App\Enums\PaymentStatusEnum;
 use App\Enums\ScheduleStatusEnum;
 use App\Models\Payment;
 use App\Models\Schedule;
@@ -41,7 +41,9 @@ class CreatePaymentCommand extends Command
         $this->info("Filtering schedules for month: {$currentMonth}, year: {$currentYear}");
 
         $scheduleGroups = Schedule::where('status', ScheduleStatusEnum::COMPLETED)
-            ->whereDoesntHave('payments') // Hanya ambil schedule yang belum memiliki payment
+            ->whereDoesntHave('payments', function ($query) {
+                $query->unpaid();
+            })
             ->whereMonth('date', $currentMonth) // Filter berdasarkan bulan saat ini
             ->whereYear('date', $currentYear) // Filter berdasarkan tahun saat ini
             ->select('course_id', 'student_id', 'teacher_id', DB::raw('count(*) as total'))
@@ -82,7 +84,10 @@ class CreatePaymentCommand extends Command
             'teacher_id' => $group->teacher_id,
             'status' => ScheduleStatusEnum::COMPLETED
         ])
-            ->whereDoesntHave('payments')
+            // ->whereDoesntHave('payments')
+            ->whereDoesntHave('payments', function ($query) {
+                $query->unpaid();
+            })
             ->whereMonth('date', $currentMonth) // Filter berdasarkan bulan saat ini
             ->whereYear('date', $currentYear) // Filter berdasarkan tahun saat ini
             ->limit(5) // Ubah limit menjadi 8 sesuai dengan deskripsi
@@ -99,7 +104,7 @@ class CreatePaymentCommand extends Command
                 'payment_method' => null, // Akan diisi saat pembayaran dilakukan
                 'payment_date' => null, // Akan diisi saat pembayaran dilakukan
                 'total_amount' => $totalAmount,
-                'payment_status' => PaymentStatus::Unpaid,
+                'payment_status' => PaymentStatusEnum::Unpaid,
                 'payment_note' => ("Total pembayaran untuk {$schedules->count()} jadwal sudah selesai"),
                 'created_by' => 1, // Ganti dengan user ID yang sesuai atau gunakan sistem
             ]);

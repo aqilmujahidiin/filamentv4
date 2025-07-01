@@ -21,11 +21,6 @@ class Course extends Model
         'fee_per_hour' => 'decimal:0'
     ];
 
-    public function students()
-    {
-        return $this->hasMany(Student::class);
-    }
-
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
@@ -34,5 +29,16 @@ class Course extends Model
     public function educationLevel()
     {
         return $this->belongsTo(EducationLevel::class);
+    }
+
+    public function studentCoureses()
+    {
+        return $this->hasMany(StudentCourses::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Course::class, 'student_courses', 'course_id', 'student_id')
+            ->withTimestamps();
     }
 }

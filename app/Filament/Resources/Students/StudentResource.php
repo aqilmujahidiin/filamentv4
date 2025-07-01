@@ -2,118 +2,56 @@
 
 namespace App\Filament\Resources\Students;
 
-use BackedEnum;
+use App\Filament\Resources\Students\Pages\CreateStudent;
+use App\Filament\Resources\Students\Pages\EditStudent;
+use App\Filament\Resources\Students\Pages\ListStudents;
+use App\Filament\Resources\Students\Pages\ViewStudent;
+use App\Filament\Resources\Students\RelationManagers\StudentCoursesRelationManager;
+use App\Filament\Resources\Students\Schemas\StudentForm;
+use App\Filament\Resources\Students\Schemas\StudentInfolist;
+use App\Filament\Resources\Students\Tables\StudentsTable;
 use App\Models\Student;
-use Filament\Tables\Table;
-use Filament\Schemas\Schema;
-use Filament\Actions\EditAction;
+use BackedEnum;
 use Filament\Resources\Resource;
-use Filament\Actions\DeleteAction;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Actions\BulkActionGroup;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use App\Filament\Resources\Students\Pages\ManageStudents;
+use Filament\Tables\Table;
 
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::AcademicCap;
-
-    protected static ?int $navigationSort = 2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('name'),
-                TextInput::make('email')
-                    ->email(),
-                TextInput::make('phone')
-                    ->tel(),
-                Textarea::make('address')
-                    ->columnSpanFull(),
-                Grid::make(2)
-                    ->schema([
-                        Select::make('status')
-                            ->options([
-                                'active' => 'Active',
-                                'inactive' => 'Inactive',
-                            ]),
-                        Select::make('gender')
-                            ->options([
-                                'male' => 'Male',
-                                'female' => 'Female',
-                            ]),
-                    ]),
-                DatePicker::make('birth_date'),
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->searchable()
-                    ->preload(),
-                Select::make('guardian_id')
-                    ->relationship('guardian', 'name')
-                    ->searchable()
-                    ->preload(),
-            ]);
+        return StudentForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return StudentInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->searchable(),
-                TextColumn::make('phone')
-                    ->searchable(),
-                TextColumn::make('birth_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('user.name')
-                    ->sortable(),
-                TextColumn::make('guardian.name')
-                    ->sortable(),
-                TextColumn::make('creator.name')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updater.name')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return StudentsTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            StudentCoursesRelationManager::class
+        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ManageStudents::route('/'),
+            'index' => ListStudents::route('/'),
+            'create' => CreateStudent::route('/create'),
+            'view' => ViewStudent::route('/{record}'),
+            'edit' => EditStudent::route('/{record}/edit'),
         ];
     }
 }

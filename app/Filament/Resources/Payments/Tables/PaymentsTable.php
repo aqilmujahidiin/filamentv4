@@ -2,16 +2,10 @@
 
 namespace App\Filament\Resources\Payments\Tables;
 
-use App\Enums\PaymentStatus;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Enums\PaymentStatusEnum;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\{Action, ActionGroup, BulkActionGroup, DeleteAction, DeleteBulkAction, EditAction, ViewAction};
 
 class PaymentsTable
 {
@@ -35,7 +29,7 @@ class PaymentsTable
                     ->sortable(),
                 TextColumn::make('payment_status')
                     ->badge()
-                    ->tooltip(fn(PaymentStatus $state): string => $state->getLabel())
+                    ->tooltip(fn(PaymentStatusEnum $state): string => $state->getLabel())
                     ->searchable(),
                 TextColumn::make('creator.name')
                     ->label('Created By')
@@ -56,19 +50,20 @@ class PaymentsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->recordUrl(false)
             ->filters([
                 //
             ])
             ->recordActions([
                 Action::make('bayar')
-                    ->label(fn($record) => $record->payment_status === PaymentStatus::Pending ? 'Lanjutkan Pembayaran' : 'Bayar Sekarang')
+                    ->label('Bayar Sekarang')
                     ->url(fn($record) => route('payment.pay', $record))
                     ->openUrlInNewTab()
                     ->button()
                     ->icon('heroicon-o-credit-card')
-                    ->visible(fn($record) => in_array($record->payment_status, [PaymentStatus::Unpaid, PaymentStatus::Pending]))
-                    ->color(fn($record) => $record->payment_status === PaymentStatus::Pending ? 'success' : 'warning'),
+                    ->visible(fn($record) => $record->payment_status === PaymentStatusEnum::Unpaid)
+                    ->color(fn($record) => $record->payment_status === PaymentStatusEnum::Pending ? 'success' : 'warning'),
 
                 ViewAction::make(),
                 ActionGroup::make([

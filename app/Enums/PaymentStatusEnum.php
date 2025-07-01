@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum PaymentStatus: string implements HasColor, HasLabel, HasIcon
+enum PaymentStatusEnum: string implements HasColor, HasLabel, HasIcon
 {
     case Pending = 'pending';
     case Unpaid = 'unpaid';

@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\EducationLevel;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use phpDocumentor\Reflection\Types\Nullable;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration {
     /**
@@ -21,6 +22,7 @@ return new class extends Migration {
             $table->string('gender')->nullable();
             $table->date('birth_date')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(EducationLevel::class, 'education_level_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('guardian_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

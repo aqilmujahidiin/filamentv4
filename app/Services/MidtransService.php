@@ -35,6 +35,12 @@ class MidtransService
                 'first_name' => $payment->student->name,
                 'email' => $payment->student->email,
             ],
+            'item_details' => $payment->schedules->map(fn($schedule) => [
+                'id' => "SCH-{$schedule->id}",
+                'price' => $schedule->pivot->amount,
+                'quantity' => 1,
+                'name' => 'Kelas ' . $schedule->course->name ?? 'Les Privat',
+            ])->toArray(),
         ];
 
         $snap = Snap::createTransaction($payload);
