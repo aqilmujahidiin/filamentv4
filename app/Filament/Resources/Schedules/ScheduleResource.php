@@ -64,6 +64,8 @@ class ScheduleResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('no')
+                    ->rowIndex(),
                 TextColumn::make('date')
                     ->date('l, d M Y')
                     ->sortable(),
